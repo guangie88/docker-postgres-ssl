@@ -9,12 +9,12 @@ before_script:
 
 script:
   - cd 9.6/alpine
-  - docker build . -t $DOCKER_USERNAME/docker-postgres-ssl:9.6-alpine
+  - docker build . -t $DOCKER_USERNAME/postgres-ssl:9.6-alpine
   - cd ..
 
 after_script:
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
-      docker push $DOCKER_USERNAME/docker-postgres-ssl:9.6-alpine;
+      docker push $DOCKER_USERNAME/postgres-ssl:9.6-alpine;
     fi
 
 branches:
