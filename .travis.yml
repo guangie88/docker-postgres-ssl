@@ -2,6 +2,7 @@ services:
   - docker
 
 before_script:
+  - set -e
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
       docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     fi
@@ -13,7 +14,7 @@ script:
 
 after_script:
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
-      docker push $DOCKER_USERNAME/docker-postgres-ssl:9.6-alpine
+      docker push $DOCKER_USERNAME/docker-postgres-ssl:9.6-alpine;
     fi
 
 branches:
