@@ -6,15 +6,15 @@ LABEL maintainer="Chen Weiguang <chen.weiguang@gmail.com>"
 ADD ./ssl.conf /etc/postgresql-common/ssl.conf
 
 # add the ssl config setup script
-COPY pg_hba.conf /usr/share/postgresql/9.6/pg_hba.conf.sample
-COPY postgresql.conf /usr/share/postgresql/9.6/postgresql.conf.sample
+COPY pg_hba.conf /usr/local/share/postgresql/pg_hba.conf.sample
+COPY postgresql.conf /usr/local/share/postgresql/postgresql.conf.sample
 COPY server.crt server.key /var/ssl/
 
 # override the original entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/
 
-RUN chown postgres.postgres /usr/share/postgresql/9.6/pg_hba.conf.sample \
-    /usr/share/postgresql/9.6/postgresql.conf.sample \
+RUN chown postgres.postgres /usr/local/share/postgresql/pg_hba.conf.sample \
+    /usr/local/share/postgresql/postgresql.conf.sample \
     /var/ssl/server.key \
     /var/ssl/server.crt && \
     chmod 600 /var/ssl/server.key

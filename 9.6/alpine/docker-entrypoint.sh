@@ -60,36 +60,23 @@ if [ "$1" = 'postgres' ]; then
 		fi
 		eval "initdb --username=postgres $POSTGRES_INITDB_ARGS"
 
-		# check password first so we can output the warning before postgres
-		# messes it up
+		# check for existence of password first
+        # SSL log-in requires password to be present
 		file_env 'POSTGRES_PASSWORD'
-		if [ "$POSTGRES_PASSWORD" ]; then
-			pass="PASSWORD '$POSTGRES_PASSWORD'"
-			authMethod=md5
-		else
+		if [ ! "$POSTGRES_PASSWORD" ]; then
 			# The - option suppresses leading tabs but *not* spaces. :)
 			cat >&2 <<-'EOWARN'
-				****************************************************
-				WARNING: No password has been set for the database.
-				         This will allow anyone with access to the
-				         Postgres port to access your database. In
-				         Docker's default configuration, this is
-				         effectively any other container on the same
-				         system.
-
-				         Use "-e POSTGRES_PASSWORD=password" to set
-				         it in "docker run".
-				****************************************************
+				***************************************************
+				 ERROR: No password has been set for the database.
+				        Use "-e POSTGRES_PASSWORD=password" to set
+				        it in "docker run".
+				***************************************************
 			EOWARN
 
-			pass=
-			authMethod=trust
-		fi
-
-		{
-			echo
-			echo "host all all all $authMethod"
-		} >> "$PGDATA/pg_hba.conf"
+            exit 1
+        fi
+        
+        pass="PASSWORD '$POSTGRES_PASSWORD'"
 
 		# internal start of server in order to allow set-up using psql-client
 		# does not listen on external TCP/IP and waits until start finishes
